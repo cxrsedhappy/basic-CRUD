@@ -1,0 +1,3 @@
+# supposed to be ignored by git
+# .env
+.idea
