@@ -10,7 +10,7 @@ from .database import Base
 
 class TimestampsMixin:
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
-    updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
+    updated_at: Mapped[datetime] = mapped_column(default=datetime.utcnow(), onupdate=datetime.now)
 
 
 class User(Base, TimestampsMixin):
