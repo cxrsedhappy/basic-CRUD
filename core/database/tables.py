@@ -15,11 +15,13 @@ class TimestampsMixin:
 
 class User(Base, TimestampsMixin):
     __tablename__ = 'users'
+    __allow_unmapped__ = True
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
 
-    posts: list[Post] = relationship('Post', backref='user')
+    posts: list[Post] = relationship('Post', backref='user', cascade='all, delete')
 
     def __init__(self, username, password, **kwargs):
         self.username = kwargs.get('username', username)
@@ -33,7 +35,7 @@ class Post(Base, TimestampsMixin):
     __tablename__ = 'posts'
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
-    text: Mapped[TEXT] = mapped_column(TEXT(collation='utf8'), nullable=False)  # Never tries to support emojis
+    text: Mapped[TEXT] = mapped_column(TEXT, nullable=False)  # Support for longer texts and emojis
 
     def __init__(self, user_id, text, **kwargs):
         self.user_id = kwargs.get('user_id', user_id)
