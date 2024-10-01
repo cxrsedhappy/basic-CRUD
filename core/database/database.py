@@ -25,7 +25,7 @@ session_factory = async_sessionmaker(
 async def global_init():
     """Database initialization. Drops existing tables and creates new"""
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.drop_all)
+        # await connection.run_sync(Base.metadata.drop_all)  # uncomment this line if you want to drop all tables
         await connection.run_sync(Base.metadata.create_all)
 
 
