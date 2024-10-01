@@ -1,21 +1,20 @@
 from datetime import datetime
-from pydantic import BaseModel, field_validator, ConfigDict
+from pydantic import BaseModel, Field
 
 
 class PostM(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    id: int
-    user_id: int
-    text: str
-    created_at: datetime
-    updated_at: datetime
+    id: int = Field(..., description="Post ID")
+    user_id: int = Field(..., description="Author ID")
+    text: str = Field(..., min_length=1, description="Content of the post")
+    created_at: datetime = Field(..., description="Post creation time")
+    updated_at: datetime = Field(..., description="Post update time")
+
+    class Config:
+        from_attributes = True
+        orm_mode = True
 
 
+# This model is used to update a post also.
+# Best practice is to use it in combination with PostCreateM
 class PostCreateM(BaseModel):
-    text: str
-
-    @field_validator('text')
-    def text_must_be_at_least_1_char(cls, v):
-        if len(v) < 1:
-            raise ValueError('Text must be at least 1 character')
-        return v
+    text: str = Field(min_length=1)
