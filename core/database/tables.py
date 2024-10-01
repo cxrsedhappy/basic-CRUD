@@ -21,14 +21,14 @@ class User(Base, TimestampsMixin):
     username: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
 
-    posts: list[Post] = relationship('Post', backref='user', cascade='all, delete')
+    posts: Mapped[list[Post]] = relationship('Post', back_populates='user', lazy='selectin')
 
     def __init__(self, username, password, **kwargs):
         self.username = kwargs.get('username', username)
         self.password = kwargs.get('password', password)
 
     def __repr__(self):
-        return f'<User id={self.id} name={self.username} email={self.email}>'
+        return f'<User id={self.id} name={self.username} email={self.password}>'
 
 
 class Post(Base, TimestampsMixin):
@@ -37,9 +37,11 @@ class Post(Base, TimestampsMixin):
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     text: Mapped[TEXT] = mapped_column(TEXT, nullable=False)  # Support for longer texts and emojis
 
+    user: Mapped[User] = relationship('User', back_populates='posts')
+
     def __init__(self, user_id, text, **kwargs):
         self.user_id = kwargs.get('user_id', user_id)
         self.text = kwargs.get('text', text)
 
     def __repr__(self):
-        return f'<Post id={self.id} author_id={self.user_id} text={self.email[:10]}>'
+        return f'<Post id={self.id} author_id={self.user_id} text={self.text[:10]}>'
