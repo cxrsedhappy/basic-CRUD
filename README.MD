@@ -37,3 +37,5 @@
 ```
 ../basic_CRUD> docker-compose up
 ```
+
+Документация доступна по ссылке http://localhost:8000/docs
