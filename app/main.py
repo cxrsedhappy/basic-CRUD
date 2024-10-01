@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from api.v1 import router as router_v1
-from api.v1.user.auth import router as router_auth
+from .api.v1 import router as router_v1
+from .api.v1.user.auth import router as router_auth
 
 from core.database import global_init
 
