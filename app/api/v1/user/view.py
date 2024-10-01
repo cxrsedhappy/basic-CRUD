@@ -1,12 +1,11 @@
-import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import Response
 
 from core.database import create_session
 
 from .auth import get_current_user
 from .schemas import UserCreateM, UserPublicM, UserPrivateM, UserPasswordChangeM
 from . import crud
-from .utils import bcrypt_context
 
 router = APIRouter(prefix='/user', tags=['Users'])
 
@@ -38,6 +37,7 @@ async def get_user(pwd_model: UserPasswordChangeM, user=Depends(get_current_user
 
 
 @router.delete('/{user_id}')
-async def get_user(user=Depends(get_current_user), session=Depends(create_session)):
+async def get_user(response: Response, user=Depends(get_current_user), session=Depends(create_session)):
     await crud.delete_user(session, user['id'])
+    response.delete_cookie(key="access_token", httponly=True)
     return {'msg': f'User with id<{user["id"]}> deleted'}

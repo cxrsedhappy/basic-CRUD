@@ -1,14 +1,14 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, Field
 
 
 # If you want to create BaseUser class wait until 3 or more classes needed.
 class UserPublicM(BaseModel):
     """User **public** model. Includes only public data"""
-    id: int
-    username: str
-    created_at: datetime
-    updated_at: datetime
+    id: int = Field(..., description="User ID")
+    username: str = Field(..., description="User name")
+    created_at: datetime = Field(..., description="User creation time")
+    updated_at: datetime = Field(..., description="User update time")
 
     class Config:
         from_attributes = True
@@ -17,11 +17,11 @@ class UserPublicM(BaseModel):
 
 class UserPrivateM(BaseModel):
     """User **private** model. Includes private data"""
-    id: int
-    username: str
-    password: str
-    created_at: datetime
-    updated_at: datetime
+    id: int = Field(..., description="User ID")
+    username: str = Field(..., description="User name")
+    password: str = Field(..., description="User hashed password")
+    created_at: datetime = Field(..., description="User creation time")
+    updated_at: datetime = Field(..., description="User update time")
 
     class Config:
         from_attributes = True
@@ -30,31 +30,13 @@ class UserPrivateM(BaseModel):
 
 class UserPasswordChangeM(BaseModel):
     """User **private** model. Includes private data"""
-    password: str
-
-    @field_validator('password')
-    def password_must_be_at_least_8_chars(cls, v):
-        if len(v) < 8:
-            raise ValueError('Password must be at least 8 characters')
-        return v
+    password: str = Field(min_length=8, max_length=32)
 
 
 class UserCreateM(BaseModel):
     """User creates model"""
-    username: str
-    password: str
-
-    @field_validator('username')
-    def username_must_be_at_least_3_chars(cls, v):
-        if len(v) < 3:
-            raise ValueError('Username must be at least 3 characters')
-        return v
-
-    @field_validator('password')
-    def password_must_be_at_least_8_chars(cls, v):
-        if len(v) < 8:
-            raise ValueError('Password must be at least 8 characters')
-        return v
+    username: str = Field(min_length=3, max_length=32)
+    password: str = Field(min_length=8, max_length=32)
 
 
 class TokenM(BaseModel):
